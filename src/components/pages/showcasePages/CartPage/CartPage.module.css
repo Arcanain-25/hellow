@@ -1,0 +1,68 @@
+.cart-page-body {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background-color: #edf2f7; /* светлый, мягкий для глаз фон */
+    padding: 40px 20px;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(100, 150, 255, 0.2); /* мягкая тень */
+    font-family: 'Orbitron', sans-serif; /* техно / RPG шрифт */
+    color: #1a1f2b; /* спокойный тёмный текст для контраста */
+}
+
+/* Заголовок с мягким свечением */
+.title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4a90e2; /* спокойный синий */
+    text-shadow:
+        0 0 5px #b0d4ff,
+        0 0 10px #90c8ff;
+    border-bottom: 2px solid #90c8ff;
+    padding-bottom: 8px;
+}
+
+/* Элементы корзины */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(74, 144, 226, 0.1); /* мягкий светящийся блок */
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(74, 144, 226, 0.3);
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.3), 0 0 20px rgba(120, 180, 255, 0.2) inset;
+}
+
+/* Кнопки */
+.cart-button {
+    background: linear-gradient(135deg, #4a90e2, #90c8ff);
+    color: #ffffff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px #4a90e2, 0 0 20px #90c8ff inset;
+    transition: all 0.3s ease;
+}
+
+.cart-button:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 0 15px #4a90e2, 0 0 25px #90c8ff inset;
+}
+
+/* Мобильная адаптация */
+@media screen and (max-width: 768px) {
+    .cart-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

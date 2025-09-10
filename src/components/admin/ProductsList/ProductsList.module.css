@@ -1,0 +1,132 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Orbitron', sans-serif; /* техно/RPG шрифт */
+  background-color: #f4f7fa; /* светлый фон для успокаивающего эффекта */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(70, 130, 255, 0.1);
+}
+
+th {
+  font-size: 16px;
+  padding: 12px 15px;
+  text-align: left;
+  color: #1a1f2b;
+  background: linear-gradient(135deg, #3390ff, #7ec0ff);
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #1a1f2b;
+  border-bottom: 1px solid rgba(70,130,255,0.1);
+}
+
+tr {
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+tbody tr:hover {
+  background-color: rgba(70, 144, 255, 0.15);
+  transform: translateX(5px);
+  box-shadow: 0 0 10px rgba(70,144,255,0.3);
+}
+
+.filter-row {
+  background-color: rgba(70,144,255,0.05);
+  font-weight: bold;
+}
+
+.action-cell {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(70,144,255,0.2);
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.1);
+}
+
+.chip-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.product-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #1a1f2b;
+}
+
+.action button {
+  background: linear-gradient(135deg, #3390ff, #7ec0ff);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 0 8px #3390ff, 0 0 16px #7ec0ff inset;
+  transition: all 0.3s ease;
+}
+
+.action button:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 0 16px #3390ff, 0 0 32px #7ec0ff inset;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .filter-row { display: none; }
+
+  thead tr { position: absolute; top: -9999px; left: -9999px; }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:last-of-type {
+    border-bottom: none;
+    padding-bottom: 40px;
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .cell:nth-of-type(1):before { content: 'Фото'; }
+  .product-name-cell:nth-of-type(2):before { content: 'Название'; }
+  .cell:nth-of-type(3):before { content: 'Категория'; }
+  .cell:nth-of-type(4):before { content: 'Производитель'; }
+  .cell:nth-of-type(5):before { content: 'Цена'; }
+  .action-cell:nth-of-type(6):before { content: 'Действия'; }
+}

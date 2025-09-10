@@ -1,0 +1,70 @@
+.form {
+  padding: 30px 20px 20px;
+  background: linear-gradient(135deg, rgba(70,144,255,0.08), rgba(120,180,255,0.05));
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(70, 144, 255, 0.2), inset 0 0 10px rgba(120,180,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  font-family: 'Orbitron', sans-serif;
+  color: #1a1f2b;
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Эффект “дыхания” формы */
+.form::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(70,144,255,0.15), transparent 70%);
+  animation: pulseGlow 4s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1) translate(0,0); opacity: 0.6; }
+  50% { transform: scale(1.1) translate(5px,5px); opacity: 0.3; }
+}
+
+.form > * {
+  position: relative;
+  z-index: 1;
+}
+
+.action {
+  display: flex;
+  gap: 20px;
+  flex-direction: column-reverse;
+}
+
+.action button {
+  background: linear-gradient(135deg, #3390ff, #7ec0ff);
+  color: #0f111a;
+  padding: 12px 28px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 12px #3390ff, 0 0 24px #7ec0ff inset;
+  transition: all 0.3s ease;
+}
+
+.action button:hover {
+  transform: scale(1.08) translateY(-3px) rotate(-1deg);
+  box-shadow: 0 0 20px #3390ff, 0 0 40px #7ec0ff inset, 0 0 25px #5aa0ff;
+}
+
+/* Адаптив для больших экранов */
+@media screen and (min-width: 768px) {
+  .action {
+    flex-direction: row;
+    align-self: flex-end;
+  }
+}
