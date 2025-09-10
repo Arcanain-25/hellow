@@ -1,8 +1,16 @@
 .cart-form {
-  background-color: #ecf7ed;
-  padding: 16px;
-  border-radius: 4px;
+  background: linear-gradient(145deg, #f4fbf5, #ecf7ed);
+  padding: 20px;
+  border-radius: 10px;
   box-sizing: border-box;
+  border: 1px solid rgba(0, 128, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 0 8px rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cart-form:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
 .action {

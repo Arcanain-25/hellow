@@ -2,80 +2,77 @@
   position: relative;
 }
 
+/* Кнопка меню */
 .button {
-  font-family: 'Nunito';
+  font-family: 'Nunito', sans-serif;
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 16px;
+  border-radius: 8px;
   border: none;
-  background-color: #fc0;
+  background: linear-gradient(135deg, #00bfff, #3390ff);
   font-size: 16px;
   cursor: pointer;
-  transition: opacity 200ms linear;
-  color: #222222;
+  transition: all 0.25s ease;
+  color: #ffffff;
   width: 100%;
   justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 191, 255, 0.25), inset 0 0 6px rgba(255, 255, 255, 0.2);
 }
 
 .button:hover {
-  opacity: 0.7;
-  transition: opacity 200ms linear;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 191, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.25);
 }
 
+/* Выпадающее меню */
 .nav {
   position: absolute;
-  top: 45px;
-  background-color: #fff;
+  top: 48px;
+  background: linear-gradient(145deg, #f7faff, #e6f3ff);
   width: 100%;
   z-index: 4;
-  border-radius: 4px;
-  border: 1px solid lightgray;
-  box-shadow: 0px 5px 22px rgba(0, 0, 0, 0.1);
-  animation: fade 100ms linear;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 191, 255, 0.15);
+  animation: fade 200ms ease-in-out;
 }
 
+/* Список */
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 14px;
   list-style: none;
-  padding: 20px 5px;
+  padding: 18px 8px;
   margin: 0;
 }
 
+/* Ссылки */
 .link {
-  font-weight: 700;
-  font-size: 16px;
-  color: #333333;
-  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #1e2a47;
+  padding: 8px 14px;
   display: flex;
   text-decoration: none;
-  transition: background-color 100ms linear;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .link:hover {
-  background-color: #fc0;
-  border-radius: 3px;
-  transition: background-color 150ms linear;
+  background: linear-gradient(135deg, #00bfff, #3390ff);
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.4);
 }
 
 @keyframes fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media screen and (min-width: 768px) {
-  .button {
-    width: auto;
-  }
-
-  .nav {
-    width: 280px;
-  }
+  .button { width: auto; }
+  .nav { width: 280px; }
 }
