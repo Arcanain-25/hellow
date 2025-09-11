@@ -1,6 +1,19 @@
 .footer {
-  background-color: #e8ebf0;
-  border-radius: 4px;
-  padding: 10px;
+  background-color: #0a0a0f; /* тёмный фон для контраста с неоном */
+  border-radius: 8px;
+  padding: 15px 20px;
   font-size: 12px;
+  color: #00ffff; /* яркий неоновый текст */
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; /* неоновое свечение */
+  text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+  transition: all 0.3s;
 }
+
+/* Лёгкое мерцание при наведении */
+.footer:hover {
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+  transform: scale(1.02);
+}
+

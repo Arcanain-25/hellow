@@ -10,7 +10,7 @@
   overflow: hidden;
 
   /* Фон-изображение вместо градиента */
-  background: url('https://images.wallpaperscraft.ru/image/single/galaktika_zemlia_set_126341_3840x2160.jpg') center/cover no-repeat;
+  background: url('https://images.wallpaperscraft.ru/image/single/soty_obem_zheleznyj_167098_3840x2160.jpg') center/cover no-repeat;
 }
 
 /* Лёгкие “плавающие частицы” */
@@ -74,7 +74,7 @@
   box-shadow: 0 0 12px rgba(92, 80, 150, 0.25);
   transition: transform 0.3s ease, box-shadow 0.4s ease;
   position: relative;
-}
+}       
 
 .card:hover {
   transform: translateY(-4px);
@@ -97,4 +97,4 @@
 
 .card:hover::after {
   opacity: 1;
-}
+}    

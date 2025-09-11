@@ -4,8 +4,30 @@
   gap: 20px;
   position: relative;
   box-sizing: border-box;
+  padding: 20px;
 }
 
+/* Карточки */
+.settings div {
+  background: rgba(0, 0, 0, 0.7); /* темный фон для читаемости */
+  border: 2px solid #00ffff; /* неоновый контур */
+  border-radius: 15px;
+  padding: 20px;
+  color: #e0ffff; /* светлый текст для контраста */
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; /* неоновое свечение */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Эффект при наведении */
+.settings div:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+}
+
+/* Адаптивность */
 @media screen and (min-width: 768px) {
   .settings {
     grid-template-columns: 1fr 1fr;
