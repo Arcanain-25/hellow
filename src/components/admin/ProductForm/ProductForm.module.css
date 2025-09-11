@@ -1,29 +1,150 @@
+/* === Общий контейнер формы === */
 .wrapper {
-  max-width: 960px;
+  max-width: 720px;
   width: 100%;
-  align-self: center;
+  margin: 40px auto;
+  padding: 32px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #1a1a22;
+  border-radius: 10px;
+  border: 1px solid #2c2c38;
+  color: #f0f0f0;
+  line-height: 1.5;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
 }
 
+/* === Контейнеры для полей === */
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.action {
-  display: flex;
-  flex-direction: column-reverse;
   gap: 20px;
 }
 
 @media screen and (min-width: 768px) {
-  .container {
+  .container.row {
     flex-direction: row;
+    gap: 20px;
   }
+}
 
+/* === Подписи (label) === */
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #cfcfff;
+}
+
+/* === Поля ввода === */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #242433;
+  color: #f8f8f8;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #8f5eff;
+  background: #2d2d3d;
+  outline: none;
+  box-shadow: 0 0 8px #8f5eff, 0 0 16px rgba(143,94,255,0.4);
+}
+
+/* === Ошибки === */
+.errorText {
+  color: #ff4d6d;
+  font-size: 13px;
+  margin-top: 4px;
+  text-shadow: 0 0 4px rgba(255,77,109,0.6);
+}
+
+/* === Кнопки === */
+.action {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+@media screen and (min-width: 480px) {
   .action {
     flex-direction: row;
-    align-self: flex-end;
+    justify-content: flex-end;
+    gap: 15px;
   }
+}
+
+button {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  border: none;
+  transition: all 0.25s ease;
+}
+
+/* Основная кнопка */
+button[mode='primary'] {
+  background: #8f5eff;
+  color: #fff;
+  box-shadow: 0 0 8px #8f5eff, 0 0 16px rgba(143,94,255,0.5);
+}
+
+button[mode='primary']:hover {
+  background: #a97bff;
+  box-shadow: 0 0 12px #a97bff, 0 0 24px rgba(169,123,255,0.6);
+}
+
+/* Второстепенная кнопка */
+button[mode='secondary'] {
+  background: #2f2d3f;
+  color: #ddd;
+  border: 1px solid #555;
+  box-shadow: 0 0 6px rgba(143,94,255,0.2);
+}
+
+button[mode='secondary']:hover {
+  background: #3d3b4f;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(143,94,255,0.4);
+}
+
+/* === Два поля в строку === */
+.row-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media screen and (min-width: 768px) {
+  .row-inputs {
+    flex-direction: row;
+    gap: 15px;
+  }
+  .row-inputs input {
+    flex: 1;
+  }
+}
+
+/* === Textarea === */
+textarea {
+  resize: vertical;
+  min-height: 100px;
 }
