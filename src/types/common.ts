@@ -82,6 +82,47 @@ export type ProductCartItem = CartItem & {
   isWished: boolean;
 };
 
+export type User = {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  address?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  profileImage?: string;
+  dateOfBirth?: string;
+  gender?: 'male' | 'female' | 'other';
+  preferences?: {
+    newsletter: boolean;
+    notifications: boolean;
+  };
+};
+
+export type AuthState = {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+};
+
+export type LoginCredentials = {
+  email: string;
+  password: string;
+};
+
+export type RegisterCredentials = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+  phone?: string;
+  address?: string;
+  dateOfBirth?: string;
+  gender?: 'male' | 'female' | 'other';
+  agreeToTerms: boolean;
+  subscribeToNewsletter?: boolean;
+};
+
 export type Order = {
   id: string;
   orderNumber: number;

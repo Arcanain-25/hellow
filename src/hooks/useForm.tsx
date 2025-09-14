@@ -11,7 +11,7 @@ type Option = {
 const useForm = <T extends {}>(
   initInput: T,
   callback: () => void,
-  validator: (field: string, inputValue: string | { [key: string]: string }) => { [key: string]: string } | null
+  validator: (field: string, inputValue: string | { [key: string]: string }, allValues?: any) => { [key: string]: string } | null
 ): {
   input: T;
   errors: Error;
@@ -65,7 +65,7 @@ const useForm = <T extends {}>(
     let isValid = true;
 
     Object.entries(input).forEach(([key, value]) => {
-      const inputErrorObj = validator(key, value as string | { [key: string]: string });
+      const inputErrorObj = validator(key, value as string | { [key: string]: string }, input);
       if (inputErrorObj) {
         isValid = false;
         setErrors((prev) => ({ ...prev, ...inputErrorObj }));

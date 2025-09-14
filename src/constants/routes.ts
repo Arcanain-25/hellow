@@ -7,4 +7,7 @@ export const PATHS = {
   wishlist: '/wishlist',
   cart: '/cart',
   success: 'success',
+  login: '/login',
+  register: '/register',
+  profile: '/profile',
 };

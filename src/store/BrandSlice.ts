@@ -36,89 +36,109 @@ const initialState: BrandState = {
 const BASE_URL = 'https://eccomer-2d8d2-default-rtdb.firebaseio.com';
 
 export const fetchBrands = createAsyncThunk('brand/fetchbrands', async (_, { dispatch, rejectWithValue }) => {
-  const response = await fetch(`${BASE_URL}/brands.json`);
+  try {
+    const response = await fetch(`${BASE_URL}/brands.json`);
 
-  if (!response.ok) {
+    if (!response.ok) {
+      dispatch(showAlert({ type: AlertType.Error, message: FETCH_BRANDS_ERROR_MESSAGE }));
+      return rejectWithValue(FETCH_BRANDS_ERROR_MESSAGE);
+    }
+
+    const data = await response.json();
+    const brands: Brand[] = handleObj(data);
+
+    if (brands.length < 2) {
+      const mockedBrands: Brand[] = handleObj(MOCK_BRANDS);
+      return mockedBrands;
+    }
+    return brands;
+  } catch (error) {
     dispatch(showAlert({ type: AlertType.Error, message: FETCH_BRANDS_ERROR_MESSAGE }));
     return rejectWithValue(FETCH_BRANDS_ERROR_MESSAGE);
   }
-
-  const data = await response.json();
-  const brands: Brand[] = handleObj(data);
-
-  if (brands.length < 2) {
-    const mockedBrands: Brand[] = handleObj(MOCK_BRANDS);
-    return mockedBrands;
-  }
-  return brands;
 });
 
 export const createBrand = createAsyncThunk(
   'brand/createBrand',
   async (brand: Partial<Brand>, { dispatch, rejectWithValue }) => {
-    const response = await fetch(`${BASE_URL}/brands.json`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(brand),
-    });
+    try {
+      const response = await fetch(`${BASE_URL}/brands.json`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(brand),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        dispatch(showAlert({ type: AlertType.Error, message: CREATE_BRAND_ERROR_MESSAGE }));
+        return rejectWithValue(CREATE_BRAND_ERROR_MESSAGE);
+      }
+
+      const data: { name: string } = await response.json();
+      return { id: data.name, ...brand } as Brand;
+    } catch (error) {
       dispatch(showAlert({ type: AlertType.Error, message: CREATE_BRAND_ERROR_MESSAGE }));
       return rejectWithValue(CREATE_BRAND_ERROR_MESSAGE);
     }
-
-    const data: { name: string } = await response.json();
-    return { id: data.name, ...brand } as Brand;
   }
 );
 
 export const updateBrand = createAsyncThunk(
   'brand/updateBrand',
   async (brand: Brand, { dispatch, rejectWithValue }) => {
-    const response = await fetch(`${BASE_URL}/brands/${brand.id}.json`, {
-      method: 'PATCH',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: brand.name,
-        description: brand.description,
-        url: brand.url,
-      }),
-    });
+    try {
+      const response = await fetch(`${BASE_URL}/brands/${brand.id}.json`, {
+        method: 'PATCH',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: brand.name,
+          description: brand.description,
+          url: brand.url,
+        }),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        dispatch(showAlert({ type: AlertType.Error, message: UPDATE_BRAND_ERROR_MESSAGE }));
+        return rejectWithValue(UPDATE_BRAND_ERROR_MESSAGE);
+      }
+
+      const data = await response.json();
+      const updatedBrand: Brand = {
+        id: brand.id,
+        ...data,
+      };
+      return updatedBrand;
+    } catch (error) {
       dispatch(showAlert({ type: AlertType.Error, message: UPDATE_BRAND_ERROR_MESSAGE }));
       return rejectWithValue(UPDATE_BRAND_ERROR_MESSAGE);
     }
-
-    const data = await response.json();
-    const updatedBrand: Brand = {
-      id: brand.id,
-      ...data,
-    };
-    return updatedBrand;
   }
 );
 
 export const deleteBrand = createAsyncThunk(
   'brand/deleteBrand',
   async (id: Brand['id'], { dispatch, rejectWithValue }) => {
-    const response = await fetch(`${BASE_URL}/brands/${id}.json`, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${BASE_URL}/brands/${id}.json`, {
+        method: 'DELETE',
+        headers: {
+          'Content-type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        dispatch(showAlert({ type: AlertType.Error, message: DELETE_BRAND_ERROR_MESSAGE }));
+        return rejectWithValue(DELETE_BRAND_ERROR_MESSAGE);
+      }
+
+      return id;
+    } catch (error) {
       dispatch(showAlert({ type: AlertType.Error, message: DELETE_BRAND_ERROR_MESSAGE }));
       return rejectWithValue(DELETE_BRAND_ERROR_MESSAGE);
     }
-
-    return id;
   }
 );
 
@@ -138,7 +158,12 @@ export const BrandSlice = createSlice({
       state.selectedBrand = initialState.selectedBrand;
     },
 
-    resetBrandError: (state) => {},
+    resetBrandError: (state) => {
+      state.error = {
+        isError: false,
+        message: '',
+      };
+    },
   },
 
   extraReducers: (builder) => {

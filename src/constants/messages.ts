@@ -46,3 +46,12 @@ export const CREATE_ORDER_ERROR_MESSAGE = 'Не удалось оформить 
 // Tooltip messages
 export const NO_WAY_TO_CHANGE_THIS_PRODUCT =
   'Этот товар нельзя редактировать или удалить. Чтобы попробовать данный функционал добавьте собственный товар';
+
+// Auth messages
+export const LOGIN_SUCCESS = 'Успешный вход в систему';
+export const LOGIN_ERROR = 'Неверный email или пароль';
+export const REGISTER_SUCCESS = 'Регистрация прошла успешно';
+export const REGISTER_ERROR = 'Ошибка регистрации';
+export const LOGOUT_SUCCESS = 'Вы вышли из системы';
+export const USER_EXISTS_ERROR = 'Пользователь с таким email уже существует';
+export const PASSWORDS_NOT_MATCH = 'Пароли не совпадают';

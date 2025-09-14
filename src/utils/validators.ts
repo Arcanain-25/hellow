@@ -90,6 +90,71 @@ export const brandFormValidator = (field: string, inputValue: string | { [key: s
   return null;
 };
 
+export const authFormValidator = (field: string, inputValue: string | { [key: string]: string }, allValues?: any): { [key: string]: string } | null => {
+  const validateFields = ['email', 'password', 'confirmPassword', 'name', 'phone'];
+
+  if (!validateFields.includes(field) || typeof inputValue === 'object') {
+    return null;
+  }
+
+  const value = inputValue.trim();
+
+  if (value.length === 0) {
+    return {
+      [field]: 'Поле не может быть пустым',
+    };
+  }
+
+  if (field === 'email') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return {
+        [field]: 'Введите корректный email',
+      };
+    }
+  }
+
+  if (field === 'password') {
+    if (value.length < 6) {
+      return {
+        [field]: 'Пароль должен содержать минимум 6 символов',
+      };
+    }
+  }
+
+  if (field === 'confirmPassword') {
+    if (value.length < 6) {
+      return {
+        [field]: 'Пароль должен содержать минимум 6 символов',
+      };
+    }
+    if (allValues && value !== allValues.password) {
+      return {
+        [field]: 'Пароли не совпадают',
+      };
+    }
+  }
+
+  if (field === 'name') {
+    if (value.length < 2) {
+      return {
+        [field]: 'Имя должно содержать минимум 2 символа',
+      };
+    }
+  }
+
+  if (field === 'phone') {
+    const phoneRegex = /^[+]?[0-9\s\-()]{10,}$/;
+    if (!phoneRegex.test(value)) {
+      return {
+        [field]: 'Введите корректный номер телефона',
+      };
+    }
+  }
+
+  return null;
+};
+
 export const cartFormValidator = (field: string, inputValue: string | { [key: string]: string }) => {
   const validateFields = ['name', 'phone', 'address'];
 

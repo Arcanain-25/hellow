@@ -5,17 +5,19 @@ import FavoriteIcon from '../../../UI/icons/FavoriteIcon/FavoriteIcon';
 import classes from './ShowcaseHeader.module.css';
 import Logo from '../../../../assets/logo.png';
 import { PATHS } from '../../../../constants/routes';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../../../store/store';
 import Menu from '../../../showcase/Menu/Menu';
 import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../../../../store/UserSlice';
 
 const ShowcaseHeader: React.FC = () => {
   const categories = useSelector((state: RootState) => state.category.categories);
-  const { wishlist, cart } = useSelector((state: RootState) => state.user);
+  const { wishlist, cart, user, isAuthenticated } = useSelector((state: RootState) => state.user);
   const totalProductsQuantityInCart = cart.reduce((res, val) => res + val.quantity, 0);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputPassword, setInputPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,6 +39,11 @@ const ShowcaseHeader: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate(PATHS.showcase);
+  };
+
   return (
     <header className={classes.header}>
       <div className={classes['admin-link-wrapper']}>
@@ -52,6 +59,29 @@ const ShowcaseHeader: React.FC = () => {
 
         <div className={classes['actions-wrapper']}>
           <Menu categories={categories} />
+
+          <div className={classes['auth-wrapper']}>
+        {isAuthenticated && user ? (
+          <div className={classes['user-info']}>
+            <span className={classes['user-name']}>Привет, {user.name}!</span>
+            <Link to={PATHS.profile} className={classes['profile-link']}>
+              Личный кабинет
+            </Link>
+            <button className={classes['logout-btn']} onClick={handleLogout}>
+              Выйти
+            </button>
+          </div>
+        ) : (
+              <div className={classes['auth-links']}>
+                <Link to={PATHS.login} className={classes['auth-link']}>
+                  Войти
+                </Link>
+                <Link to={PATHS.register} className={classes['auth-link']}>
+                  Регистрация
+                </Link>
+              </div>
+            )}
+          </div>
 
           <div className={classes['badge-wrapper']}>
             <Badge
