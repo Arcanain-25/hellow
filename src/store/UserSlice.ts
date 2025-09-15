@@ -67,19 +67,14 @@ export const login = createAsyncThunk<User, LoginCredentials, { state: RootState
   'user/login',
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
-      // Используем Supabase для входа
       const user = await SupabaseAuthService.loginUser(credentials);
-      
-      // Сохраняем пользователя в localStorage для быстрого доступа
       localStorage.setItem('user', JSON.stringify(user));
       
-      // Загружаем данные корзины и избранного из Supabase
       const cart = await SupabaseCartService.getUserCart(user.id);
       const wishlist = await SupabaseCartService.getUserWishlist(user.id);
       
       dispatch(setProductsToCart(cart));
       dispatch(setWishlist(wishlist));
-      
       dispatch(showAlert({ type: AlertType.Success, message: 'Успешный вход в систему' }));
       
       return user;
@@ -125,12 +120,24 @@ export const logout = createAsyncThunk<void, void, { state: RootState }>(
       
       // Очищаем localStorage
       localStorage.removeItem('user');
+      localStorage.removeItem('cart');
+      localStorage.removeItem('wishlist');
+      
+      // Очищаем состояние корзины и избранного
+      dispatch(clearCart());
+      dispatch(setWishlist([]));
       
       dispatch(showAlert({ type: AlertType.Info, message: 'Вы вышли из системы' }));
     } catch (error) {
       console.error('Error during logout:', error);
       // Даже если произошла ошибка, очищаем локальные данные
       localStorage.removeItem('user');
+      localStorage.removeItem('cart');
+      localStorage.removeItem('wishlist');
+      
+      // Очищаем состояние корзины и избранного
+      dispatch(clearCart());
+      dispatch(setWishlist([]));
       dispatch(showAlert({ type: AlertType.Info, message: 'Вы вышли из системы' }));
     }
   }

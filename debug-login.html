@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отладка входа</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Отладка входа в систему</h1>
+    <div>
+        <h3>Шаг 1: Проверить существующих пользователей</h3>
+        <button onclick="checkUsers()">Проверить пользователей</button>
+    </div>
+    
+    <div>
+        <h3>Шаг 2: Тест входа</h3>
+        <input type="email" id="email" placeholder="Email" value="">
+        <input type="password" id="password" placeholder="Пароль" value="">
+        <button onclick="testLogin()">Войти</button>
+    </div>
+    
+    <div>
+        <h3>Шаг 3: Регистрация тестового пользователя</h3>
+        <button onclick="registerTestUser()">Зарегистрировать test@example.com</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        const supabaseUrl = 'https://mcdhnxkzsbcifsaijieu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZGhueGt6c2JjaWZzYWlqaWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODEwOTAsImV4cCI6MjA3MzQ1NzA5MH0.njdhv1MANZ0K1EFTsfAl61F38aVxspkgtbNo2GGZUYY';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        async function checkUsers() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Проверяем пользователей...</p>';
+            
+            try {
+                // Проверяем текущую сессию
+                const { data: session } = await supabase.auth.getSession();
+                
+                // Проверяем профили
+                const { data: profiles, error: profilesError } = await supabase
+                    .from('profiles')
+                    .select('*');
+                
+                result.innerHTML = `
+                    <h3>Результат проверки:</h3>
+                    <p><strong>Текущая сессия:</strong> ${session.session ? `Есть (${session.session.user.email})` : 'Нет'}</p>
+                    <p><strong>Профили в БД:</strong> ${profilesError ? 'Ошибка: ' + profilesError.message : profiles.length + ' найдено'}</p>
+                    
+                    ${profiles && profiles.length > 0 ? 
+                        '<h4>Найденные пользователи:</h4>' + 
+                        profiles.map(p => `<p>📧 ${p.email} (${p.name})</p>`).join('') :
+                        '<p style="color: orange;">⚠️ Пользователи не найдены. Нужно зарегистрировать тестового пользователя.</p>'
+                    }
+                `;
+                
+                // Автоматически заполняем поля если есть пользователи
+                if (profiles && profiles.length > 0) {
+                    document.getElementById('email').value = profiles[0].email;
+                    document.getElementById('password').value = 'Test123456';
+                }
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function testLogin() {
+            const result = document.getElementById('result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                result.innerHTML = '<p style="color: red;">Введите email и пароль</p>';
+                return;
+            }
+            
+            result.innerHTML = '<p>Тестируем вход...</p>';
+            
+            try {
+                console.log('🔐 Attempting login:', email);
+                
+                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                console.log('Auth result:', authData, authError);
+
+                if (authError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка входа: ${authError.message}</p>`;
+                    return;
+                }
+
+                if (!authData.user) {
+                    result.innerHTML = `<p style="color: red;">❌ Пользователь не найден</p>`;
+                    return;
+                }
+
+                result.innerHTML = `
+                    <p style="color: green;">✅ Вход успешен!</p>
+                    <p><strong>ID:</strong> ${authData.user.id}</p>
+                    <p><strong>Email:</strong> ${authData.user.email}</p>
+                    <p><strong>Подтвержден:</strong> ${authData.user.email_confirmed_at ? 'Да' : 'Нет'}</p>
+                    <p><strong>Сессия:</strong> ${authData.session ? 'Создана' : 'Не создана'}</p>
+                `;
+
+            } catch (err) {
+                console.error('Login test error:', err);
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function registerTestUser() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Регистрируем тестового пользователя...</p>';
+            
+            try {
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: 'test@example.com',
+                    password: 'Test123456',
+                    options: {
+                        data: {
+                            name: 'Test User'
+                        }
+                    }
+                });
+
+                if (authError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка регистрации: ${authError.message}</p>`;
+                    return;
+                }
+
+                result.innerHTML = `
+                    <p style="color: green;">✅ Тестовый пользователь зарегистрирован!</p>
+                    <p><strong>Email:</strong> test@example.com</p>
+                    <p><strong>Пароль:</strong> Test123456</p>
+                    <p>Теперь можно тестировать вход.</p>
+                `;
+                
+                // Заполняем поля для входа
+                document.getElementById('email').value = 'test@example.com';
+                document.getElementById('password').value = 'Test123456';
+
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,6 +2,49 @@ import { supabase } from '../config';
 import { User, LoginCredentials, RegisterCredentials } from '../../types/common';
 
 export class SupabaseAuthService {
+  // Получить текущего пользователя
+  static async getCurrentUser(): Promise<User | null> {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        return null;
+      }
+
+      // Получаем профиль пользователя из таблицы profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        console.warn('Profile not found:', profileError);
+        return null;
+      }
+
+      return {
+        id: profileData.id,
+        email: profileData.email,
+        name: profileData.name,
+        phone: profileData.phone,
+        address: profileData.address,
+        dateOfBirth: profileData.date_of_birth,
+        gender: profileData.gender,
+        profileImage: profileData.profile_image,
+        createdAt: profileData.created_at,
+        updatedAt: profileData.updated_at,
+        preferences: {
+          newsletter: profileData.newsletter_subscription,
+          notifications: profileData.notifications_enabled,
+        },
+      };
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
+  }
+
   // Регистрация нового пользователя
   static async registerUser(credentials: RegisterCredentials): Promise<User> {
     try {
@@ -13,18 +56,9 @@ export class SupabaseAuthService {
         throw new Error('Необходимо согласиться с условиями использования');
       }
 
-      // Регистрируем пользователя в Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: credentials.email,
         password: credentials.password,
-        options: {
-          emailRedirectTo: undefined, // Отключаем редирект после подтверждения
-          data: {
-            name: credentials.name,
-            phone: credentials.phone || '',
-            address: credentials.address || '',
-          }
-        }
       });
 
       if (authError) {
@@ -32,55 +66,48 @@ export class SupabaseAuthService {
       }
 
       if (!authData.user) {
-        throw new Error('Ошибка создания пользователя');
+        throw new Error('Ошибка регистрации пользователя');
       }
 
-      // Создаем профиль пользователя в таблице profiles
+      // Создаем профиль пользователя
       const profileData = {
         id: authData.user.id,
         email: credentials.email,
         name: credentials.name,
         phone: credentials.phone || null,
-        address: credentials.address || null,
-        date_of_birth: credentials.dateOfBirth || null,
-        gender: credentials.gender || null,
-        newsletter_subscription: credentials.subscribeToNewsletter || false,
-        notifications_enabled: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
 
-      const { error: profileError } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .insert([profileData]);
+        .insert([profileData])
+        .select()
+        .single();
 
       if (profileError) {
-        console.error('Error creating profile:', profileError);
-        // Не бросаем ошибку, так как пользователь уже создан в Auth
+        console.warn('Profile creation failed, but continuing:', profileError);
+        // Не блокируем регистрацию, если профиль не создался
+        return {
+          id: authData.user.id,
+          email: credentials.email,
+          name: credentials.name,
+          phone: credentials.phone || '',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
       }
 
-      // Возвращаем пользователя в нашем формате
-      const user: User = {
-        id: authData.user.id,
-        email: credentials.email,
-        name: credentials.name,
-        phone: credentials.phone,
-        address: credentials.address,
-        dateOfBirth: credentials.dateOfBirth,
-        gender: credentials.gender,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        preferences: {
-          newsletter: credentials.subscribeToNewsletter || false,
-          notifications: true,
-        },
+      return {
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        phone: profile.phone || '',
+        createdAt: profile.created_at,
+        updatedAt: profile.updated_at,
       };
-
-      console.log('✅ Пользователь успешно зарегистрирован в Supabase:', user.email);
-      return user;
-
     } catch (error) {
-      console.error('Error registering user:', error);
+      console.error('Registration error:', error);
       throw error;
     }
   }
@@ -116,13 +143,8 @@ export class SupabaseAuthService {
           email: authData.user.email || '',
           name: authData.user.user_metadata?.name || 'Пользователь',
           phone: authData.user.user_metadata?.phone,
-          address: authData.user.user_metadata?.address,
           createdAt: authData.user.created_at,
           updatedAt: new Date().toISOString(),
-          preferences: {
-            newsletter: false,
-            notifications: true,
-          },
         };
         return user;
       }
@@ -133,21 +155,11 @@ export class SupabaseAuthService {
         email: profileData.email,
         name: profileData.name,
         phone: profileData.phone,
-        address: profileData.address,
-        dateOfBirth: profileData.date_of_birth,
-        gender: profileData.gender,
-        profileImage: profileData.profile_image,
         createdAt: profileData.created_at,
         updatedAt: profileData.updated_at,
-        preferences: {
-          newsletter: profileData.newsletter_subscription,
-          notifications: profileData.notifications_enabled,
-        },
       };
 
-      console.log('✅ Пользователь успешно вошел в систему:', user.email);
       return user;
-
     } catch (error) {
       console.error('Error logging in user:', error);
       throw error;
@@ -161,106 +173,8 @@ export class SupabaseAuthService {
       if (error) {
         throw new Error(error.message);
       }
-      console.log('✅ Пользователь вышел из системы');
     } catch (error) {
       console.error('Error logging out user:', error);
-      throw error;
-    }
-  }
-
-  // Получить текущего пользователя
-  static async getCurrentUser(): Promise<User | null> {
-    try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      
-      if (!authUser) {
-        return null;
-      }
-
-      // Получаем профиль пользователя
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authUser.id)
-        .single();
-
-      if (profileError) {
-        console.warn('Profile not found:', profileError);
-        return null;
-      }
-
-      const user: User = {
-        id: profileData.id,
-        email: profileData.email,
-        name: profileData.name,
-        phone: profileData.phone,
-        address: profileData.address,
-        dateOfBirth: profileData.date_of_birth,
-        gender: profileData.gender,
-        profileImage: profileData.profile_image,
-        createdAt: profileData.created_at,
-        updatedAt: profileData.updated_at,
-        preferences: {
-          newsletter: profileData.newsletter_subscription,
-          notifications: profileData.notifications_enabled,
-        },
-      };
-
-      return user;
-    } catch (error) {
-      console.error('Error getting current user:', error);
-      return null;
-    }
-  }
-
-  // Обновить профиль пользователя
-  static async updateUserProfile(userId: string, updates: Partial<User>): Promise<User> {
-    try {
-      const updateData: any = {
-        updated_at: new Date().toISOString(),
-      };
-
-      if (updates.name) updateData.name = updates.name;
-      if (updates.phone !== undefined) updateData.phone = updates.phone;
-      if (updates.address !== undefined) updateData.address = updates.address;
-      if (updates.dateOfBirth !== undefined) updateData.date_of_birth = updates.dateOfBirth;
-      if (updates.gender !== undefined) updateData.gender = updates.gender;
-      if (updates.profileImage !== undefined) updateData.profile_image = updates.profileImage;
-      if (updates.preferences?.newsletter !== undefined) updateData.newsletter_subscription = updates.preferences.newsletter;
-      if (updates.preferences?.notifications !== undefined) updateData.notifications_enabled = updates.preferences.notifications;
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .update(updateData)
-        .eq('id', userId)
-        .select()
-        .single();
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      const user: User = {
-        id: data.id,
-        email: data.email,
-        name: data.name,
-        phone: data.phone,
-        address: data.address,
-        dateOfBirth: data.date_of_birth,
-        gender: data.gender,
-        profileImage: data.profile_image,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-        preferences: {
-          newsletter: data.newsletter_subscription,
-          notifications: data.notifications_enabled,
-        },
-      };
-
-      console.log('✅ Профиль пользователя обновлен');
-      return user;
-    } catch (error) {
-      console.error('Error updating user profile:', error);
       throw error;
     }
   }

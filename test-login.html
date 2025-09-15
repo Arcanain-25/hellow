@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест входа в систему</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Тест входа в систему</h1>
+    <div>
+        <input type="email" id="email" placeholder="Email" value="test@example.com">
+        <input type="password" id="password" placeholder="Пароль" value="Test123456">
+        <button onclick="testLogin()">Войти</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        const supabaseUrl = 'https://mcdhnxkzsbcifsaijieu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZGhueGt6c2JjaWZzYWlqaWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODEwOTAsImV4cCI6MjA3MzQ1NzA5MH0.njdhv1MANZ0K1EFTsfAl61F38aVxspkgtbNo2GGZUYY';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        async function testLogin() {
+            const result = document.getElementById('result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            result.innerHTML = '<p>Проверяем вход...</p>';
+            
+            try {
+                console.log('🔄 Attempting login with:', email);
+                
+                // Пытаемся войти
+                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                console.log('Auth result:', { authData, authError });
+
+                if (authError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка входа: ${authError.message}</p>`;
+                    return;
+                }
+
+                if (!authData.user) {
+                    result.innerHTML = `<p style="color: red;">❌ Пользователь не найден</p>`;
+                    return;
+                }
+
+                console.log('✅ Auth successful, fetching profile...');
+
+                // Получаем профиль
+                const { data: profileData, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', authData.user.id)
+                    .single();
+
+                console.log('Profile result:', { profileData, profileError });
+
+                if (profileError) {
+                    result.innerHTML = `
+                        <p style="color: orange;">⚠️ Вход успешен, но профиль не найден</p>
+                        <p>User ID: ${authData.user.id}</p>
+                        <p>Email: ${authData.user.email}</p>
+                        <p>Ошибка профиля: ${profileError.message}</p>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <p style="color: green;">✅ Успешный вход!</p>
+                        <p>ID: ${profileData.id}</p>
+                        <p>Email: ${profileData.email}</p>
+                        <p>Имя: ${profileData.name}</p>
+                        <p>Создан: ${profileData.created_at}</p>
+                    `;
+                }
+
+            } catch (err) {
+                console.error('❌ Login test error:', err);
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

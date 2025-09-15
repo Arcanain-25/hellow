@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест Supabase подключения</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Тест подключения к Supabase</h1>
+    <button onclick="testConnection()">Проверить подключение</button>
+    <button onclick="testTables()">Проверить таблицы</button>
+    <button onclick="testUserData()">Проверить данные пользователей</button>
+    <button onclick="testAuth()">Проверить аутентификацию</button>
+    <div id="result"></div>
+
+    <script>
+        const supabaseUrl = 'https://mcdhnxkzsbcifsaijieu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZGhueGt6c2JjaWZzYWlqaWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODEwOTAsImV4cCI6MjA3MzQ1NzA5MH0.njdhv1MANZ0K1EFTsfAl61F38aVxspkgtbNo2GGZUYY';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        async function testConnection() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Проверяем подключение...</p>';
+            
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                if (error) {
+                    result.innerHTML = `<p style="color: red;">Ошибка подключения: ${error.message}</p>`;
+                } else {
+                    result.innerHTML = '<p style="color: green;">✅ Подключение к Supabase успешно!</p>';
+                }
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function testTables() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Проверяем таблицы...</p>';
+            
+            try {
+                // Проверяем таблицу profiles
+                const { data: profiles, error: profilesError } = await supabase
+                    .from('profiles')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (profilesError) {
+                    result.innerHTML = `<p style="color: red;">❌ Таблица profiles не найдена: ${profilesError.message}</p>
+                                      <p><strong>Нужно выполнить SQL скрипт из файла supabase-setup.sql!</strong></p>`;
+                    return;
+                }
+                
+                // Проверяем таблицу cart_items
+                const { data: cart, error: cartError } = await supabase
+                    .from('cart_items')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (cartError) {
+                    result.innerHTML = `<p style="color: red;">❌ Таблица cart_items не найдена: ${cartError.message}</p>`;
+                    return;
+                }
+                
+                // Проверяем таблицу wishlist_items
+                const { data: wishlist, error: wishlistError } = await supabase
+                    .from('wishlist_items')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (wishlistError) {
+                    result.innerHTML = `<p style="color: red;">❌ Таблица wishlist_items не найдена: ${wishlistError.message}</p>`;
+                    return;
+                }
+                
+                result.innerHTML = `
+                    <p style="color: green;">✅ Все таблицы найдены!</p>
+                    <ul>
+                        <li>profiles: ${profiles.count || 0} записей</li>
+                        <li>cart_items: ${cart.count || 0} записей</li>
+                        <li>wishlist_items: ${wishlist.count || 0} записей</li>
+                    </ul>
+                `;
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function testUserData() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Проверяем данные пользователей...</p>';
+            
+            try {
+                // Проверяем профили
+                const { data: profiles, error: profilesError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .limit(10);
+                
+                if (profilesError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка получения профилей: ${profilesError.message}</p>`;
+                    return;
+                }
+                
+                // Проверяем текущую сессию для получения auth users
+                const { data: session } = await supabase.auth.getSession();
+                
+                result.innerHTML = `
+                    <h3>Данные пользователей:</h3>
+                    <p><strong>Профили в таблице profiles:</strong> ${profiles.length}</p>
+                    <p><strong>Текущая сессия:</strong> ${session.session ? 'Есть' : 'Нет'}</p>
+                    
+                    ${profiles.length === 0 ? 
+                        `<p style="color: orange;">⚠️ Профили отсутствуют! Это означает, что при регистрации профили не создаются.</p>
+                         <button onclick="createTestProfile()" style="margin: 10px; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px;">Создать тестовый профиль</button>` :
+                        profiles.map(profile => `
+                            <div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+                                <p><strong>ID:</strong> ${profile.id}</p>
+                                <p><strong>Email:</strong> ${profile.email}</p>
+                                <p><strong>Имя:</strong> ${profile.name}</p>
+                                <p><strong>Создан:</strong> ${profile.created_at}</p>
+                            </div>
+                        `).join('')
+                    }
+                `;
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function createTestProfile() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Создаем тестовый профиль...</p>';
+            
+            try {
+                // Получаем текущего пользователя
+                const { data: session } = await supabase.auth.getSession();
+                
+                if (!session.session) {
+                    result.innerHTML = '<p style="color: red;">❌ Нет активной сессии. Сначала войдите в систему.</p>';
+                    return;
+                }
+                
+                const user = session.session.user;
+                
+                // Создаем профиль
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([{
+                        id: user.id,
+                        email: user.email,
+                        name: user.user_metadata?.name || 'Test User',
+                        phone: user.user_metadata?.phone || null,
+                        address: user.user_metadata?.address || null,
+                        newsletter_subscription: false,
+                        notifications_enabled: true
+                    }])
+                    .select()
+                    .single();
+                
+                if (profileError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка создания профиля: ${profileError.message}</p>`;
+                    return;
+                }
+                
+                result.innerHTML = `
+                    <p style="color: green;">✅ Тестовый профиль создан успешно!</p>
+                    <div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+                        <p><strong>ID:</strong> ${profile.id}</p>
+                        <p><strong>Email:</strong> ${profile.email}</p>
+                        <p><strong>Имя:</strong> ${profile.name}</p>
+                    </div>
+                `;
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+        
+        async function testAuth() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Проверяем текущую сессию...</p>';
+            
+            try {
+                // Проверяем текущую сессию
+                const { data: session, error: sessionError } = await supabase.auth.getSession();
+                
+                if (sessionError) {
+                    result.innerHTML = `<p style="color: red;">❌ Ошибка сессии: ${sessionError.message}</p>`;
+                    return;
+                }
+                
+                if (!session.session) {
+                    result.innerHTML = `<p style="color: orange;">⚠️ Нет активной сессии</p>`;
+                    return;
+                }
+                
+                const user = session.session.user;
+                
+                // Пытаемся получить профиль текущего пользователя
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                
+                result.innerHTML = `
+                    <h3>Текущая сессия:</h3>
+                    <p><strong>User ID:</strong> ${user.id}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Создан:</strong> ${user.created_at}</p>
+                    
+                    <h3>Профиль:</h3>
+                    ${profileError ? 
+                        `<p style="color: red;">❌ Профиль не найден: ${profileError.message}</p>` :
+                        `<p style="color: green;">✅ Профиль найден: ${profile.name}</p>`
+                    }
+                `;
+                
+            } catch (err) {
+                result.innerHTML = `<p style="color: red;">Ошибка: ${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

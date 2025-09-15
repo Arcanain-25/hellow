@@ -13,7 +13,8 @@ import SettingsPage from './components/pages/adminPages/SettingsPage/SettingsPag
 import AdminPage from './components/pages/adminPages/AdminPage/AdminPage';
 import DiscountProductsPage from './components/pages/showcasePages/DiscountProductsPage/DiscountProductsPage';
 import ShowcasePage from './components/pages/showcasePages/ShowcasePage/ShowcasePage';
-import { getFromLocalStorage, setUser } from './store/UserSlice';
+import { getFromLocalStorage, setUser, setProductsToCart, setWishlist } from './store/UserSlice';
+import { SupabaseCartService } from './supabase/services/cartService';
 import WishlistPage from './components/pages/showcasePages/WishlistPage/WishlistPage';
 import ProductPage from './components/pages/showcasePages/ProductPage/ProductPage';
 import Loader from './components/UI/Loader/Loader';
@@ -116,16 +117,24 @@ const App = () => {
         const currentUser = await SupabaseAuthService.getCurrentUser();
         if (currentUser) {
           dispatch(setUser(currentUser));
+          
+          // Загружаем корзину и избранное для конкретного пользователя из Supabase
+          const userCart = await SupabaseCartService.getUserCart(currentUser.id);
+          const userWishlist = await SupabaseCartService.getUserWishlist(currentUser.id);
+          
+          dispatch(setProductsToCart(userCart));
+          dispatch(setWishlist(userWishlist));
         } else {
           // Если нет пользователя в Supabase, проверяем localStorage
           dispatch(getFromLocalStorage('user'));
+          
+          // Для неавторизованных пользователей загружаем из localStorage
+          dispatch(getFromLocalStorage('wishlist'));
+          dispatch(getFromLocalStorage('cart'));
         }
         
         // Инициализируем демо-пользователей
         await MockUserService.initializeDemoUsers();
-        
-        dispatch(getFromLocalStorage('wishlist'));
-        dispatch(getFromLocalStorage('cart'));
         dispatch(fetchProducts());
       } catch (error) {
         console.log('Fetch error App.tsx:', error);

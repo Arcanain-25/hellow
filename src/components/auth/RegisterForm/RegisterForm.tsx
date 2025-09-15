@@ -29,9 +29,10 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = async () => {
     try {
       await dispatch(register(input)).unwrap();
-      navigate(PATHS.profile);
+      navigate(PATHS.profile, { replace: true });
     } catch (error) {
-      console.error('Register error:', error);
+      console.error('Registration error:', error);
+      alert('Ошибка регистрации: ' + (error as any)?.message || 'Неизвестная ошибка');
     }
   };
 

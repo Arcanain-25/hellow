@@ -26,11 +26,11 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async () => {
     try {
       await dispatch(login(input)).unwrap();
-      // Перенаправляем на предыдущую страницу или на главную
-      const from = (location.state as any)?.from?.pathname || PATHS.showcase;
+      const from = (location.state as any)?.from?.pathname || PATHS.profile;
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
+      alert('Ошибка входа: ' + (error as any)?.message || 'Неверный email или пароль');
     }
   };
 
