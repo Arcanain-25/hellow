@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '../../../store/store';
 import { wishListHandler } from '../../../store/UserSlice';
 import { Product } from '../../../types/common';
 import LoadMore from '../../UI/LoadMore/LoadMore';
+import ProductSearch from '../../UI/ProductSearch/ProductSearch';
 import ProductCard from '../ProductCard/ProductCard';
 import classes from './ProductCardList.module.css';
 
@@ -19,12 +20,13 @@ const ProductCardList: React.FC<IProductCardListProps> = ({ products }) => {
   const { url } = useParams();
   const { wishlist } = useSelector((state: RootState) => state.user);
   const [productsToRender, setProductsToRender] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const [count, setCount] = useState(PRODUCT_LIST_LIMIT);
-  const isLoadMoreVisible = products.length > count;
+  const isLoadMoreVisible = filteredProducts.length > count;
   const [sortInDescendingOrder, setSortInDescendingOrder] = useState(false);
   const [sorted, setSorted] = useState<Product[]>([]);
 
-  const sortedProducts = products.sort((a, b) => {
+  const sortedProducts = filteredProducts.sort((a, b) => {
     let x = a.price;
     let y = b.price;
     if (a.discount?.discountedPrice !== undefined) {
@@ -65,11 +67,20 @@ const ProductCardList: React.FC<IProductCardListProps> = ({ products }) => {
     dispatch(wishListHandler({ id, isWished }));
   };
 
+  const handleFilteredProducts = (filtered: Product[]) => {
+    setFilteredProducts(filtered);
+    setCount(PRODUCT_LIST_LIMIT);
+  };
+
   const showMoreHandler = (count: number) => {
     setCount(count);
     const list = sortedProducts.slice(0, count);
     setProductsToRender(list);
   };
+
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
 
   useEffect(() => {
     setProductsToRender(sortedProducts.slice(0, PRODUCT_LIST_LIMIT));
@@ -82,6 +93,12 @@ const ProductCardList: React.FC<IProductCardListProps> = ({ products }) => {
 
   return (
     <div className={classes['product-card-list']}>
+      <ProductSearch
+        products={products}
+        onFilteredProducts={handleFilteredProducts}
+        placeholder="Поиск товаров по названию, бренду или категории..."
+      />
+      
       <div className={classes['list-wrapper']}>
         <div className={classes['sort-wrapper']}>
           <span className={classes.sort} onClick={toggleSorting}>
@@ -110,7 +127,7 @@ const ProductCardList: React.FC<IProductCardListProps> = ({ products }) => {
       {isLoadMoreVisible && (
         <LoadMore
           count={count}
-          itemsListLength={products.length}
+          itemsListLength={filteredProducts.length}
           onClick={showMoreHandler}
           itemsLimit={PRODUCT_LIST_LIMIT}
         />
