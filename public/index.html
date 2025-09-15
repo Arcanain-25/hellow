@@ -32,8 +32,8 @@
       .elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce {
         z-index: 9999 !important;
         position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
+        bottom: 80px !important;
+        right: 30px !important;
       }
 
       /* Кнопка чат-бота */
@@ -41,6 +41,44 @@
         border-radius: 50% !important;
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
         transition: all 0.3s ease !important;
+        width: 65px !important;
+        height: 65px !important;
+      }
+
+      /* Hover эффект для кнопки */
+      .elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce:hover iframe {
+        transform: scale(1.05) !important;
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+      }
+
+      /* Пульсирующий эффект для привлечения внимания */
+      .elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -5px !important;
+        left: -5px !important;
+        right: -5px !important;
+        bottom: -5px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        opacity: 0.3 !important;
+        animation: pulse 2s infinite !important;
+        z-index: -1 !important;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0.3;
+        }
       }
 
       /* Стилизация контейнера чата */
@@ -138,8 +176,8 @@
       /* Адаптивность для мобильных */
       @media (max-width: 768px) {
         .elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce {
-          bottom: 15px !important;
-          right: 15px !important;
+          bottom: 70px !important;
+          right: 20px !important;
         }
         
         .elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce [class*="widget"] {
@@ -173,6 +211,10 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <!-- Elfsight AI Chatbot -->
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <div class="elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce" data-elfsight-app-lazy></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

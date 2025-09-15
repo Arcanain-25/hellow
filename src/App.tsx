@@ -144,33 +144,6 @@ const App = () => {
     fetchData();
   }, [dispatch]);
 
-  // Подключение Elfsight AI Chatbot
-  useEffect(() => {
-    const loadElfsightChatbot = () => {
-      // Загружаем платформу Elfsight
-      const script = document.createElement('script');
-      script.src = 'https://elfsightcdn.com/platform.js';
-      script.async = true;
-      document.body.appendChild(script);
-
-      // Создаем контейнер для чат-бота
-      const chatbotContainer = document.createElement('div');
-      chatbotContainer.className = 'elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce';
-      chatbotContainer.setAttribute('data-elfsight-app-lazy', '');
-      document.body.appendChild(chatbotContainer);
-    };
-
-    loadElfsightChatbot();
-
-    // Cleanup function для удаления элементов при размонтировании
-    return () => {
-      const existingScript = document.querySelector('script[src="https://elfsightcdn.com/platform.js"]');
-      const existingContainer = document.querySelector('.elfsight-app-56bae931-b682-45c5-b178-ba939dc313ce');
-      
-      if (existingScript) existingScript.remove();
-      if (existingContainer) existingContainer.remove();
-    };
-  }, []);
 
   return (
     <div
