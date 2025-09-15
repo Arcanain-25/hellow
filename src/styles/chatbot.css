@@ -1,0 +1,268 @@
+/* TinyChat Chatbot Custom Styles */
+
+/* Основной контейнер чат-бота */
+[data-tinychat-widget] {
+  z-index: 9999 !important;
+}
+
+/* Кнопка открытия чата */
+[data-tinychat-button] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  transition: all 0.3s ease !important;
+  width: 60px !important;
+  height: 60px !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  position: fixed !important;
+}
+
+[data-tinychat-button]:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+}
+
+[data-tinychat-button]:before {
+  content: '' !important;
+  position: absolute !important;
+  top: -3px !important;
+  left: -3px !important;
+  right: -3px !important;
+  bottom: -3px !important;
+  background: linear-gradient(135deg, #667eea, #764ba2, #667eea) !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  animation: rotate 3s linear infinite !important;
+}
+
+/* Иконка чата */
+[data-tinychat-button] svg,
+[data-tinychat-button] img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* Окно чата */
+[data-tinychat-widget-container] {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden !important;
+  animation: slideInUp 0.4s ease-out !important;
+}
+
+/* Заголовок чата */
+[data-tinychat-header] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  padding: 20px !important;
+  font-weight: 600 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Область сообщений */
+[data-tinychat-messages] {
+  background: rgba(248, 249, 250, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+  padding: 15px !important;
+}
+
+/* Сообщения пользователя */
+[data-tinychat-message-user] {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+  color: white !important;
+  border-radius: 18px 18px 4px 18px !important;
+  padding: 12px 16px !important;
+  margin: 8px 0 !important;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3) !important;
+  max-width: 80% !important;
+  margin-left: auto !important;
+  animation: slideInRight 0.3s ease-out !important;
+}
+
+/* Сообщения бота */
+[data-tinychat-message-bot] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #2c3e50 !important;
+  border-radius: 18px 18px 18px 4px !important;
+  padding: 12px 16px !important;
+  margin: 8px 0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  border-left: 4px solid #667eea !important;
+  max-width: 80% !important;
+  animation: slideInLeft 0.3s ease-out !important;
+}
+
+/* Поле ввода */
+[data-tinychat-input] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(102, 126, 234, 0.2) !important;
+  border-radius: 25px !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  color: #2c3e50 !important;
+  transition: all 0.3s ease !important;
+  margin: 10px !important;
+}
+
+[data-tinychat-input]:focus {
+  outline: none !important;
+  border-color: rgba(102, 126, 234, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+  transform: scale(1.02) !important;
+}
+
+[data-tinychat-input]::placeholder {
+  color: #7f8c8d !important;
+}
+
+/* Кнопка отправки */
+[data-tinychat-send-button] {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3) !important;
+  margin: 5px !important;
+}
+
+[data-tinychat-send-button]:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4) !important;
+}
+
+/* Кнопка закрытия */
+[data-tinychat-close-button] {
+  background: rgba(231, 76, 60, 0.1) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  color: #e74c3c !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: absolute !important;
+  top: 15px !important;
+  right: 15px !important;
+}
+
+[data-tinychat-close-button]:hover {
+  background: rgba(231, 76, 60, 0.2) !important;
+  transform: scale(1.1) !important;
+}
+
+/* Анимации */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  [data-tinychat-widget-container] {
+    width: calc(100vw - 20px) !important;
+    height: calc(100vh - 100px) !important;
+    bottom: 10px !important;
+    right: 10px !important;
+    border-radius: 15px !important;
+  }
+  
+  [data-tinychat-button] {
+    width: 55px !important;
+    height: 55px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+  
+  [data-tinychat-header] {
+    padding: 15px !important;
+    font-size: 16px !important;
+  }
+  
+  [data-tinychat-messages] {
+    padding: 10px !important;
+  }
+  
+  [data-tinychat-message-user],
+  [data-tinychat-message-bot] {
+    max-width: 90% !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+  }
+  
+  [data-tinychat-input] {
+    font-size: 16px !important;
+    padding: 10px 18px !important;
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  [data-tinychat-widget-container] {
+    background: rgba(44, 62, 80, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  [data-tinychat-messages] {
+    background: rgba(52, 73, 94, 0.8) !important;
+  }
+  
+  [data-tinychat-message-bot] {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ecf0f1 !important;
+  }
+  
+  [data-tinychat-input] {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ecf0f1 !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  [data-tinychat-input]::placeholder {
+    color: #95a5a6 !important;
+  }
+}
