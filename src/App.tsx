@@ -27,6 +27,9 @@ import RegisterPage from './components/pages/authPages/RegisterPage/RegisterPage
 import ProfilePage from './components/pages/authPages/ProfilePage/ProfilePage';
 import ProtectedRoute from './components/auth/ProtectedRoute/ProtectedRoute';
 import { initializeDemoUsers } from './utils/demoUsers';
+import GameHUD from './components/UI/GameHUD/GameHUD';
+import { usePlayerProgression } from './hooks/usePlayerProgression';
+import LevelUpNotification from './components/UI/LevelUpNotification/LevelUpNotification';
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +38,9 @@ const App = () => {
 
   // 🔹 состояние для размера шрифта
   const [fontSize, setFontSize] = useState(16);
+
+  // 🎮 Система прогрессии игрока
+  const { playerStats } = usePlayerProgression();
 
   const routes = useRoutes([
     {
@@ -150,14 +156,44 @@ const App = () => {
       className={classes.app}
       style={{ fontSize: `${fontSize}px` }} // применяем размер
     >
-      {/* 🔹 Кнопки управления шрифтом */}
+      {/* 🎮 Игровой HUD */}
+      <GameHUD 
+        playerStats={{
+          health: 85,
+          maxHealth: 100,
+          mana: 60,
+          maxMana: 100,
+          experience: playerStats.experience,
+          maxExperience: playerStats.maxExperience,
+          level: playerStats.level
+        }}
+        resources={{
+          gold: playerStats.coins,
+          gems: 45,
+          items: products.length
+        }}
+        quests={[
+          { id: '1', title: 'Изучить каталог товаров', completed: isDataLoaded },
+          { id: '2', title: 'Найти редкие предметы', completed: false },
+          { id: '3', title: 'Пополнить инвентарь', completed: false },
+          { id: '4', title: 'Достичь следующего уровня', completed: false }
+        ]}
+      />
+
+      {/* 🎉 Уведомления о повышении уровня */}
+      <LevelUpNotification />
+
+      {/* 🔹 Игровые кнопки управления шрифтом */}
       <div className={classes.fontControls}>
         <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
         <button onClick={() => setFontSize(16)}>Reset</button>
         <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 28))}>A+</button>
       </div>
 
-      {routes}
+      {/* 🎮 Игровой контент */}
+      <div className={classes.gameContent}>
+        {routes}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,54 @@
+/* Removed neural network and RPG glow animations */
+
 .sidebar {
-  background-color: #202124;
-  border-radius: 20px;
-  padding: 10px 20px;
+  background: 
+    linear-gradient(145deg, #0a0a0a, #1a1a2e, #16213e),
+    radial-gradient(circle at center, rgba(0, 255, 127, 0.05), transparent 70%);
+  background-size: 200% 200%, 100% 100%;
+  
+  border-radius: 25px;
+  border: 2px solid rgba(0, 255, 127, 0.3);
+  padding: 15px 25px;
+  position: relative;
+  overflow: hidden;
+  
+  box-shadow: 
+    0 0 25px rgba(0, 255, 127, 0.2),
+    inset 0 0 25px rgba(0, 255, 127, 0.05);
+  
+  /* Removed animations */
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 255, 127, 0.03) 10px,
+      rgba(0, 255, 127, 0.03) 11px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 255, 255, 0.02) 10px,
+      rgba(0, 255, 255, 0.02) 11px
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sidebar > * {
+  position: relative;
+  z-index: 2;
 }
 
 .navigation {
@@ -10,13 +57,25 @@
 
 .toggle-btn {
   display: none;
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.2), rgba(0, 255, 255, 0.2));
+  border: 1px solid rgba(0, 255, 127, 0.4);
+  border-radius: 10px;
+  color: #00ff7f;
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.4), rgba(0, 255, 255, 0.4));
+  box-shadow: 0 0 15px rgba(0, 255, 127, 0.5);
+  transform: scale(1.05);
 }
 
 .list {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 30px;
   list-style: none;
   padding: 0;
   margin: 0;

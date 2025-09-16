@@ -1,34 +1,82 @@
-@keyframes neonPulse {
-  0% {
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.25),
-                inset 0 0 8px rgba(0, 191, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(0, 191, 255, 0.4),
-                inset 0 0 14px rgba(0, 191, 255, 0.35);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.25),
-                inset 0 0 8px rgba(0, 191, 255, 0.2);
-  }
-}
+/* Removed matrix and nanotechnology animations */
 
 .admin {
   display: grid;
   grid-template-columns: 1fr;
-  padding: 18px;
-  gap: 22px;
+  padding: 20px;
+  gap: 25px;
   box-sizing: border-box;
-  background: radial-gradient(circle at top left, #243b55, #141e30);
-  border-radius: 16px;
-  border: 1px solid rgba(0, 191, 255, 0.2);
-  animation: neonPulse 4s infinite ease-in-out;
-  transition: transform 0.3s ease, background 0.4s ease;
+  min-height: 100vh;
+  position: relative;
+  
+  /* Нанотехнологический фон */
+  background: 
+    linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%),
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 127, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
+  
+  /* Сетка нанотехнологий */
+  background-image:
+    linear-gradient(rgba(0, 255, 127, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 127, 0.1) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 20px 20px;
+  
+  border-radius: 20px;
+  border: 2px solid rgba(0, 255, 127, 0.3);
+  /* Removed animations */
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+
+.admin::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 127, 0.03) 2px,
+      rgba(0, 255, 127, 0.03) 4px
+    );
+  /* Removed animation */
+  pointer-events: none;
+  z-index: 1;
+}
+
+.admin::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle, rgba(0, 255, 127, 0.1) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px, 50px 50px;
+  /* Removed animation */
+  pointer-events: none;
+  z-index: 0;
+}
+
+.admin > * {
+  position: relative;
+  z-index: 2;
 }
 
 .admin:hover {
-  transform: translateY(-3px) scale(1.01);
-  background: radial-gradient(circle at top left, #2e4a6d, #1b2735);
+  transform: translateY(-5px) scale(1.005);
+  border-color: rgba(0, 255, 127, 0.6);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(0, 255, 127, 0.4),
+    inset 0 0 40px rgba(0, 255, 127, 0.1);
 }
 
 @media (min-width: 768px) {

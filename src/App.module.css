@@ -1,130 +1,280 @@
+@keyframes gameWorldPulse {
+  0%, 100% { 
+    background-position: 0% 0%, 0% 0%;
+    filter: brightness(1) contrast(1.1);
+  }
+  50% { 
+    background-position: 100% 100%, -100% -100%;
+    filter: brightness(1.1) contrast(1.2);
+  }
+}
+
+@keyframes magicParticles {
+  0% { 
+    background-position: 0 0, 0 0, 0 0;
+    opacity: 0.3;
+  }
+  33% { 
+    background-position: 100px 50px, -50px 100px, 75px -25px;
+    opacity: 0.6;
+  }
+  66% { 
+    background-position: -50px 100px, 100px -50px, -25px 75px;
+    opacity: 0.4;
+  }
+  100% { 
+    background-position: 0 0, 0 0, 0 0;
+    opacity: 0.3;
+  }
+}
+
+@keyframes energyFlow {
+  0% { transform: translateX(-100%) rotate(0deg); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100vw) rotate(360deg); opacity: 0; }
+}
+
 .app {
   box-sizing: border-box;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Orbitron', sans-serif;
-  color: #e0e6ff;
-  padding: 20px;
+  font-family: 'Cinzel', 'Orbitron', serif;
+  color: #f0f8ff;
+  padding: 0;
   position: relative;
   overflow: hidden;
 
-  /* Фон-изображение вместо градиента */
-  background: url('https://images.wallpaperscraft.ru/image/single/soty_obem_zheleznyj_167098_3840x2160.jpg') center/cover no-repeat;
+  /* Игровой фантазийный фон */
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 20, 147, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 100, 200, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #2d1b69 50%, #1a0a2e 75%, #0a0a0a 100%);
+  
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  animation: gameWorldPulse 8s ease-in-out infinite;
 }
 
-/* Лёгкие “плавающие частицы” */
+/* Магические частицы и энергетические потоки */
 .app::before {
   content: '';
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: 
-    radial-gradient(rgba(200, 180, 255, 0.05) 1px, transparent 1px),
-    repeating-linear-gradient(
-      90deg,
-      rgba(100, 150, 255, 0.02) 0px,
-      rgba(100, 150, 255, 0.02) 1px,
-      transparent 1px,
-      transparent 4px
-    );
-  background-size: 25px 25px, 100% 4px;
+    radial-gradient(circle, rgba(138, 43, 226, 0.4) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 215, 0, 0.3) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 80px 80px, 120px 120px, 60px 60px;
   z-index: 0;
   pointer-events: none;
-  animation: drift 30s linear infinite, shimmer 6s ease-in-out infinite;
+  animation: magicParticles 12s ease-in-out infinite;
 }
 
-/* Плавное движение линий и частиц */
-@keyframes drift {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 200px 0, 0 0; }
-}
-
-/* Лёгкое мерцание частиц */
-@keyframes shimmer {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.4; }
+/* Энергетические линии */
+.app::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 100px,
+      rgba(138, 43, 226, 0.1) 100px,
+      rgba(138, 43, 226, 0.1) 102px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 150px,
+      rgba(255, 215, 0, 0.05) 150px,
+      rgba(255, 215, 0, 0.05) 152px
+    );
+  z-index: 1;
+  pointer-events: none;
+  animation: gameWorldPulse 15s linear infinite reverse;
 }
 
 /* Контент поверх фона */
 .app > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Заголовки с мистическим свечением */
+/* Игровой контент контейнер */
+.gameContent {
+  flex: 1;
+  padding: 20px;
+  margin: 80px 20px 20px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(138, 43, 226, 0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 30px rgba(138, 43, 226, 0.3),
+    inset 0 0 30px rgba(138, 43, 226, 0.1);
+}
+
+/* Заголовки в игровом стиле */
 .title {
-  font-size: 42px;
+  font-size: 3rem;
   font-weight: 700;
-  color: #c9b3ff;
+  color: #ffd700;
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  
   text-shadow:
-    0 0 10px #a77eff,
-    0 0 20px #7f5fff,
-    0 0 35px #5e3fff;
-  margin-bottom: 25px;
-  letter-spacing: 1px;
-}
-
-/* Карточки с мягким мистическим свечением */
-.card {
-  background-color: rgba(92, 80, 150, 0.1);
-  padding: 22px;
-  border-radius: 14px;
-  border: 1px solid rgba(92, 80, 150, 0.3);
-  box-shadow: 0 0 12px rgba(92, 80, 150, 0.25);
-  transition: transform 0.3s ease, box-shadow 0.4s ease;
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 20px rgba(255, 215, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
+  
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
   position: relative;
-}       
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 0 30px rgba(120, 90, 220, 0.4),
-    0 0 40px rgba(160, 130, 255, 0.3) inset,
-    0 0 50px rgba(110, 90, 240, 0.2);
 }
 
-.card::after {
+.title::before {
+  content: '⟨⟨';
+  position: absolute;
+  left: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: #8a2be2;
+  -webkit-text-fill-color: #8a2be2;
+}
+
+.title::after {
+  content: '⟩⟩';
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: #8a2be2;
+  -webkit-text-fill-color: #8a2be2;
+}
+
+/* Игровые карточки */
+.card {
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(138, 43, 226, 0.2)),
+    radial-gradient(circle at center, rgba(255, 215, 0, 0.1), transparent 70%);
+  
+  padding: 25px;
+  border-radius: 18px;
+  border: 2px solid rgba(138, 43, 226, 0.5);
+  box-shadow: 
+    0 0 20px rgba(138, 43, 226, 0.3),
+    inset 0 0 20px rgba(138, 43, 226, 0.1);
+  
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(15px);
+}
+
+.card::before {
   content: '';
   position: absolute;
-  top: -2px; left: -2px; right: -2px; bottom: -2px;
-  border-radius: 14px;
-  box-shadow: 0 0 25px rgba(160, 130, 255, 0.15);
-  opacity: 0;
-  transition: opacity 0.6s ease-in-out;
-  pointer-events: none;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  transition: left 0.6s;
 }
 
-.card:hover::after {
-  opacity: 1;
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(255, 215, 0, 0.8);
+  box-shadow:
+    0 0 40px rgba(255, 215, 0, 0.5),
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.card:hover::before {
+  left: 100%;
 }    
+/* Игровые кнопки управления шрифтом */
 .fontControls {
   position: fixed;
   top: 20px;
   left: 20px;
   display: flex;
-  gap: 8px;
-  z-index: 1000;
+  gap: 10px;
+  z-index: 10000;
 }
 
 .fontControls button {
-  padding: 8px 12px;
-  border-radius: 12px;
-  border: none;
+  padding: 10px 15px;
+  border-radius: 15px;
+  border: 2px solid rgba(138, 43, 226, 0.6);
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  color: #2c3e50;
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(138, 43, 226, 0.3)),
+    radial-gradient(circle at center, rgba(255, 215, 0, 0.1), transparent 70%);
+  backdrop-filter: blur(15px);
+  color: #ffd700;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+  box-shadow: 
+    0 0 15px rgba(138, 43, 226, 0.4),
+    inset 0 0 10px rgba(138, 43, 226, 0.1);
+  
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.fontControls button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  transition: left 0.5s;
 }
 
 .fontControls button:hover {
-  background: rgba(102, 126, 234, 0.9);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  background: 
+    linear-gradient(135deg, rgba(138, 43, 226, 0.6), rgba(255, 215, 0, 0.3)),
+    radial-gradient(circle at center, rgba(255, 215, 0, 0.2), transparent 70%);
+  border-color: rgba(255, 215, 0, 0.8);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 0 25px rgba(255, 215, 0, 0.6),
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.fontControls button:hover::before {
+  left: 100%;
+}
+
+.fontControls button:active {
+  transform: translateY(-1px) scale(1.02);
 }

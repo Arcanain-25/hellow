@@ -1,0 +1,182 @@
+@keyframes levelUpAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-50px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes coinShine {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 0 30px rgba(255, 215, 0, 0.8);
+  }
+}
+
+.notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.notification.visible {
+  opacity: 1;
+  animation: levelUpAppear 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.content {
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(138, 43, 226, 0.3)),
+    radial-gradient(circle at center, rgba(255, 215, 0, 0.2), transparent 70%);
+  
+  border: 3px solid rgba(255, 215, 0, 0.8);
+  border-radius: 25px;
+  padding: 30px 40px;
+  text-align: center;
+  backdrop-filter: blur(15px);
+  
+  box-shadow: 
+    0 0 40px rgba(255, 215, 0, 0.6),
+    0 0 80px rgba(138, 43, 226, 0.4),
+    inset 0 0 30px rgba(255, 215, 0, 0.1);
+  
+  min-width: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.content::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    rgba(255, 215, 0, 0.8), 
+    rgba(138, 43, 226, 0.8), 
+    rgba(255, 215, 0, 0.8)
+  );
+  background-size: 300% 300%;
+  border-radius: 25px;
+  z-index: -1;
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+.levelText {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.level {
+  color: #ffd700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+.reward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.coinIcon {
+  font-size: 2rem;
+  animation: coinShine 1.5s ease-in-out infinite;
+}
+
+.coinText {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+.totalCoins {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  color: #e6e6fa;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.privileges {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: #8a2be2;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: textGlow 3s ease-in-out infinite;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .content {
+    min-width: 300px;
+    padding: 25px 30px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .levelText {
+    font-size: 1.2rem;
+  }
+  
+  .level {
+    font-size: 1.5rem;
+  }
+  
+  .coinText {
+    font-size: 1.4rem;
+  }
+}

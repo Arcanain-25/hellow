@@ -138,6 +138,44 @@
   flex: 1;
 }
 
+.gameStats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: 
+    linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(255, 215, 0, 0.05)),
+    rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(138, 43, 226, 0.4);
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+  min-width: 200px;
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.statLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e6e6fa;
+  text-shadow: 0 0 5px rgba(230, 230, 250, 0.5);
+}
+
+.statValue {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
 .userName {
   font-size: 2rem;
   font-weight: 800;

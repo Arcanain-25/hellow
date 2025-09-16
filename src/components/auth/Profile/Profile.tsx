@@ -5,13 +5,16 @@ import { logout } from '../../../store/UserSlice';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../../constants/routes';
 import classes from './Profile.module.css';
+import DiscountCoupons from '../../UI/DiscountCoupons/DiscountCoupons';
+import { usePlayerProgression } from '../../../hooks/usePlayerProgression';
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user, cart, wishlist } = useSelector((state: RootState) => state.user);
   
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist' | 'coupons'>('profile');
+  const { playerStats } = usePlayerProgression();
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -53,6 +56,20 @@ const Profile: React.FC = () => {
           {user.phone && <p className={classes.userPhone}>{user.phone}</p>}
           {user.address && <p className={classes.userAddress}>{user.address}</p>}
         </div>
+        <div className={classes.gameStats}>
+          <div className={classes.statItem}>
+            <span className={classes.statLabel}>Уровень:</span>
+            <span className={classes.statValue}>{playerStats.level}</span>
+          </div>
+          <div className={classes.statItem}>
+            <span className={classes.statLabel}>Опыт:</span>
+            <span className={classes.statValue}>{playerStats.experience}/{playerStats.maxExperience}</span>
+          </div>
+          <div className={classes.statItem}>
+            <span className={classes.statLabel}>💰 Монеты:</span>
+            <span className={classes.statValue}>{playerStats.coins.toLocaleString()}</span>
+          </div>
+        </div>
       </div>
 
       <div className={classes.tabs}>
@@ -73,6 +90,12 @@ const Profile: React.FC = () => {
           onClick={() => setActiveTab('wishlist')}
         >
           Избранное ({wishlist.length})
+        </button>
+        <button
+          className={`${classes.tab} ${activeTab === 'coupons' ? classes.active : ''}`}
+          onClick={() => setActiveTab('coupons')}
+        >
+          🎫 Магазин купонов
         </button>
       </div>
 
@@ -150,6 +173,12 @@ const Profile: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'coupons' && (
+          <div className={classes.tabContent}>
+            <DiscountCoupons />
           </div>
         )}
       </div>

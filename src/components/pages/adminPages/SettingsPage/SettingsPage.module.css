@@ -1,30 +1,133 @@
+@keyframes cyberpunkPulse {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(255, 0, 127, 0.3),
+      0 0 40px rgba(0, 255, 255, 0.2),
+      inset 0 0 20px rgba(255, 0, 127, 0.1);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(255, 0, 127, 0.5),
+      0 0 60px rgba(0, 255, 255, 0.3),
+      inset 0 0 30px rgba(255, 0, 127, 0.2);
+  }
+}
+
+@keyframes digitalGrid {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 40px 40px, -40px -40px; }
+}
+
 .settings {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 25px;
   position: relative;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 25px;
+  
+  background: 
+    linear-gradient(135deg, #0a0a0a, #2d1b69, #1a1a2e, #16213e),
+    radial-gradient(circle at 30% 70%, rgba(255, 0, 127, 0.1), transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(0, 255, 255, 0.1), transparent 50%);
+  
+  /* Цифровая сетка */
+  background-image:
+    linear-gradient(rgba(255, 0, 127, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 127, 0.1) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px, 15px 15px;
+  
+  border-radius: 20px;
+  border: 2px solid rgba(255, 0, 127, 0.4);
+  overflow: hidden;
+  
+  animation: cyberpunkPulse 4s ease-in-out infinite, digitalGrid 8s linear infinite;
 }
 
-/* Карточки */
+.settings::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 0, 127, 0.03) 3px,
+      rgba(255, 0, 127, 0.03) 6px
+    );
+  animation: digitalGrid 12s linear infinite reverse;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.settings > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Карточки настроек */
 .settings div {
-  background: rgba(0, 0, 0, 0.7); /* темный фон для читаемости */
-  border: 2px solid #00ffff; /* неоновый контур */
-  border-radius: 15px;
-  padding: 20px;
-  color: #e0ffff; /* светлый текст для контраста */
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(45, 27, 105, 0.6)),
+    radial-gradient(circle at center, rgba(255, 0, 127, 0.1), transparent 70%);
+  
+  border: 2px solid rgba(255, 0, 127, 0.5);
+  border-radius: 18px;
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+  
+  color: #ff007f;
   text-align: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
-  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; /* неоновое свечение */
-  transition: transform 0.3s, box-shadow 0.3s;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+  box-shadow: 
+    0 0 15px rgba(255, 0, 127, 0.4),
+    0 0 30px rgba(0, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 0, 127, 0.1);
+  
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.settings div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 127, 0.3), transparent);
+  transition: left 0.5s;
+  z-index: 1;
+}
+
+.settings div > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* Эффект при наведении */
 .settings div:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+  transform: translateY(-5px) scale(1.05);
+  border-color: rgba(255, 0, 127, 0.8);
+  box-shadow: 
+    0 0 25px rgba(255, 0, 127, 0.6),
+    0 0 50px rgba(0, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(255, 0, 127, 0.2);
+}
+
+.settings div:hover::before {
+  left: 100%;
 }
 
 /* Адаптивность */
