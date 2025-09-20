@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Supabase Direct</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Тест прямого подключения к Supabase</h1>
+    
+    <div>
+        <input type="email" id="email" placeholder="Email" value="newuser@example.com">
+        <input type="password" id="password" placeholder="Password" value="123456">
+        <button onclick="testSignUp()">Test SignUp</button>
+        <button onclick="testSignIn()">Test SignIn</button>
+        <button onclick="checkUser()">Check Current User</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        const supabaseUrl = 'https://mcdhnxkzsbcifsaijieu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZGhueGt6c2JjaWZzYWlqaWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODEwOTAsImV4cCI6MjA3MzQ1NzA5MH0.njdhv1MANZ0K1EFTsfAl61F38aVxspkgtbNo2GGZUYY';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        async function testSignUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Тестируем регистрацию...';
+            
+            try {
+                console.log('Попытка регистрации:', { email, password });
+                
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                console.log('Результат:', { data, error });
+                
+                if (error) {
+                    resultDiv.innerHTML = `❌ Ошибка: ${error.message}<br>Код: ${error.status}<br>Детали: ${JSON.stringify(error)}`;
+                } else {
+                    resultDiv.innerHTML = `✅ Успешно! User ID: ${data.user?.id}<br>Email: ${data.user?.email}<br>Подтверждение: ${data.user?.email_confirmed_at ? 'Да' : 'Нет'}`;
+                }
+            } catch (err) {
+                console.error('Исключение:', err);
+                resultDiv.innerHTML = `❌ Исключение: ${err.message}`;
+            }
+        }
+
+        async function testSignIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Тестируем вход...';
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                console.log('Результат входа:', { data, error });
+                
+                if (error) {
+                    resultDiv.innerHTML = `❌ Ошибка входа: ${error.message}`;
+                } else {
+                    resultDiv.innerHTML = `✅ Вход успешен! User ID: ${data.user?.id}`;
+                }
+            } catch (err) {
+                console.error('Исключение:', err);
+                resultDiv.innerHTML = `❌ Исключение: ${err.message}`;
+            }
+        }
+
+        async function checkUser() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user) {
+                    resultDiv.innerHTML = `👤 Текущий пользователь: ${user.email} (ID: ${user.id})`;
+                } else {
+                    resultDiv.innerHTML = `👤 Пользователь не авторизован`;
+                }
+            } catch (err) {
+                console.error('Исключение:', err);
+                resultDiv.innerHTML = `❌ Ошибка проверки: ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

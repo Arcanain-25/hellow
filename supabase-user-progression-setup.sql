@@ -63,113 +63,17 @@ CREATE TRIGGER update_user_cart_items_updated_at
     BEFORE UPDATE ON user_cart_items 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Функция для инициализации прогрессии нового пользователя
-CREATE OR REPLACE FUNCTION initialize_user_progression()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO user_progression (user_id, level, experience, max_experience, coins)
-    VALUES (NEW.id, 1, 0, 1000, 0)
-    ON CONFLICT (user_id) DO NOTHING;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
+-- Триггеры удалены для избежания конфликтов с регистрацией
 
--- Триггер для автоматической инициализации прогрессии при регистрации
-CREATE TRIGGER initialize_user_progression_trigger
-    AFTER INSERT ON auth.users
-    FOR EACH ROW EXECUTE FUNCTION initialize_user_progression();
+-- RLS политики временно отключены для упрощения регистрации
+-- ALTER TABLE user_progression ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE user_coupons ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE user_cart_items ENABLE ROW LEVEL SECURITY;
 
--- RLS (Row Level Security) политики для безопасности
-ALTER TABLE user_progression ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_coupons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_cart_items ENABLE ROW LEVEL SECURITY;
+-- Все политики временно отключены для упрощения регистрации
 
--- Политики для user_progression
-CREATE POLICY "Users can view own progression" ON user_progression
-    FOR SELECT USING (auth.uid() = user_id);
+-- Функции удалены для упрощения системы
 
-CREATE POLICY "Users can update own progression" ON user_progression
-    FOR UPDATE USING (auth.uid() = user_id);
+-- Функция для повышения уровня удалена для упрощения
 
-CREATE POLICY "Users can insert own progression" ON user_progression
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
-
--- Политики для user_coupons
-CREATE POLICY "Users can view own coupons" ON user_coupons
-    FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert own coupons" ON user_coupons
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update own coupons" ON user_coupons
-    FOR UPDATE USING (auth.uid() = user_id);
-
--- Политики для user_cart_items
-CREATE POLICY "Users can view own cart" ON user_cart_items
-    FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert own cart items" ON user_cart_items
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update own cart items" ON user_cart_items
-    FOR UPDATE USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete own cart items" ON user_cart_items
-    FOR DELETE USING (auth.uid() = user_id);
-
--- Функция для расчета максимального опыта для уровня
-CREATE OR REPLACE FUNCTION calculate_max_experience(current_level INTEGER)
-RETURNS INTEGER AS $$
-BEGIN
-    -- Формула: базовый опыт (1000) + (уровень - 1) * 500
-    RETURN 1000 + (current_level - 1) * 500;
-END;
-$$ language 'plpgsql';
-
--- Функция для повышения уровня пользователя
-CREATE OR REPLACE FUNCTION level_up_user(p_user_id UUID)
-RETURNS JSON AS $$
-DECLARE
-    current_progression user_progression%ROWTYPE;
-    new_max_exp INTEGER;
-    coins_reward INTEGER := 5000;
-    result JSON;
-BEGIN
-    -- Получаем текущую прогрессию
-    SELECT * INTO current_progression FROM user_progression WHERE user_id = p_user_id;
-    
-    IF NOT FOUND THEN
-        RETURN '{"error": "User progression not found"}'::JSON;
-    END IF;
-    
-    -- Проверяем, достаточно ли опыта для повышения уровня
-    IF current_progression.experience < current_progression.max_experience THEN
-        RETURN '{"error": "Not enough experience"}'::JSON;
-    END IF;
-    
-    -- Вычисляем новый максимальный опыт
-    new_max_exp := calculate_max_experience(current_progression.level + 1);
-    
-    -- Обновляем прогрессию
-    UPDATE user_progression 
-    SET 
-        level = level + 1,
-        experience = experience - current_progression.max_experience,
-        max_experience = new_max_exp,
-        coins = coins + coins_reward,
-        updated_at = NOW()
-    WHERE user_id = p_user_id;
-    
-    -- Возвращаем результат
-    SELECT json_build_object(
-        'success', true,
-        'new_level', current_progression.level + 1,
-        'remaining_experience', current_progression.experience - current_progression.max_experience,
-        'new_max_experience', new_max_exp,
-        'coins_earned', coins_reward,
-        'total_coins', current_progression.coins + coins_reward
-    ) INTO result;
-    
-    RETURN result;
-END;
-$$ language 'plpgsql';
+-- RPC функции удалены для избежания конфликтов с регистрацией

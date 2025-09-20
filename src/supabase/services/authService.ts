@@ -18,9 +18,16 @@ export class SupabaseAuthService {
         .eq('id', user.id)
         .single();
 
-      if (profileError) {
-        console.warn('Profile not found:', profileError);
-        return null;
+      if (profileError || !profileData) {
+        console.warn('Profile not found, using auth data:', profileError);
+        return {
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.name || 'Пользователь',
+          phone: user.user_metadata?.phone,
+          createdAt: user.created_at || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
       }
 
       return {
@@ -48,7 +55,12 @@ export class SupabaseAuthService {
   // Регистрация нового пользователя
   static async registerUser(credentials: RegisterCredentials): Promise<User> {
     try {
-      if (credentials.password !== credentials.confirmPassword) {
+      const email = (credentials.email || '').trim().toLowerCase();
+      const password = (credentials.password || '').trim();
+      const confirmPassword = (credentials.confirmPassword || '').trim();
+      const name = (credentials.name || '').trim();
+
+      if (password !== confirmPassword) {
         throw new Error('Пароли не совпадают');
       }
 
@@ -56,9 +68,15 @@ export class SupabaseAuthService {
         throw new Error('Необходимо согласиться с условиями использования');
       }
 
+      // Базовая проверка email перед отправкой в Supabase
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Введите корректный email');
+      }
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: credentials.email,
-        password: credentials.password,
+        email,
+        password,
       });
 
       if (authError) {
@@ -68,43 +86,26 @@ export class SupabaseAuthService {
       if (!authData.user) {
         throw new Error('Ошибка регистрации пользователя');
       }
-
-      // Создаем профиль пользователя
-      const profileData = {
-        id: authData.user.id,
-        email: credentials.email,
-        name: credentials.name,
-        phone: credentials.phone || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .insert([profileData])
-        .select()
-        .single();
-
-      if (profileError) {
-        console.warn('Profile creation failed, but continuing:', profileError);
-        // Не блокируем регистрацию, если профиль не создался
-        return {
-          id: authData.user.id,
-          email: credentials.email,
-          name: credentials.name,
-          phone: credentials.phone || '',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
+      // Минимальная регистрация: не пишем в profiles напрямую на этапе signup
+      // Пытаемся мягко сохранить профиль через RPC (если функция создана SQL-скриптом)
+      try {
+        await supabase.rpc('create_or_update_profile', {
+          p_id: authData.user.id,
+          p_email: email,
+          p_name: name || 'Пользователь',
+          p_phone: credentials.phone || null,
+        });
+      } catch (rpcErr) {
+        console.warn('RPC create_or_update_profile failed (non-blocking):', rpcErr);
       }
 
       return {
-        id: profile.id,
-        email: profile.email,
-        name: profile.name,
-        phone: profile.phone || '',
-        createdAt: profile.created_at,
-        updatedAt: profile.updated_at,
+        id: authData.user.id,
+        email,
+        name,
+        phone: credentials.phone || '',
+        createdAt: authData.user.created_at || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Registration error:', error);

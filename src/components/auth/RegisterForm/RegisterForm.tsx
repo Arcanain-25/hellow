@@ -28,11 +28,38 @@ const RegisterForm: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
+      // Дополнительная защита: строгая валидация перед отправкой в Supabase
+      const email = (input.email || '').trim();
+      const password = (input.password || '').trim();
+      const confirmPassword = (input.confirmPassword || '').trim();
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Введите корректный email вида name@example.com');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Пароль должен содержать минимум 6 символов');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Пароли не совпадают');
+        return;
+      }
+
+      if (!input.agreeToTerms) {
+        alert('Необходимо согласиться с условиями использования');
+        return;
+      }
+
       await dispatch(register(input)).unwrap();
       navigate(PATHS.profile, { replace: true });
     } catch (error) {
       console.error('Registration error:', error);
-      alert('Ошибка регистрации: ' + (error as any)?.message || 'Неизвестная ошибка');
+      const message = typeof error === 'string' ? error : (error as any)?.message || 'Неизвестная ошибка';
+      alert('Ошибка регистрации: ' + message);
     }
   };
 

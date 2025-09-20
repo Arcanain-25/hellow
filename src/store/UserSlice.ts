@@ -5,8 +5,6 @@ import { AlertType, CartItem, Product, User, AuthState, LoginCredentials, Regist
 import { RootState } from './store';
 import { showAlert } from './CommonSlice';
 import { ADDED_TO_WISHLIST, REMOVED_FROM_WISHLIST } from '../constants/messages';
-import { UserService } from '../firebase/services/userService';
-import { CartService } from '../firebase/services/cartService';
 import { SupabaseAuthService } from '../supabase/services/authService';
 import { SupabaseCartService } from '../supabase/services/cartService';
 
@@ -63,7 +61,7 @@ export const getFromLocalStorage = createAsyncThunk<void, string>('user/setWishl
 });
 
 // Аутентификация
-export const login = createAsyncThunk<User, LoginCredentials, { state: RootState }>(
+export const login = createAsyncThunk<User, LoginCredentials, { state: RootState; rejectValue: string }>(
   'user/login',
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
@@ -81,12 +79,12 @@ export const login = createAsyncThunk<User, LoginCredentials, { state: RootState
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Неверный email или пароль';
       dispatch(showAlert({ type: AlertType.Error, message: errorMessage }));
-      return rejectWithValue(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-export const register = createAsyncThunk<User, RegisterCredentials, { state: RootState }>(
+export const register = createAsyncThunk<User, RegisterCredentials, { state: RootState; rejectValue: string }>(
   'user/register',
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
@@ -96,9 +94,13 @@ export const register = createAsyncThunk<User, RegisterCredentials, { state: Roo
       // Сохраняем пользователя в localStorage для быстрого доступа
       localStorage.setItem('user', JSON.stringify(newUser));
       
-      // Инициализируем пустые корзину и избранное в Supabase
-      await SupabaseCartService.updateUserCart(newUser.id, []);
-      await SupabaseCartService.updateUserWishlist(newUser.id, []);
+      // Инициализируем пустые корзину и избранное в Supabase (не блокируем регистрацию)
+      try {
+        await SupabaseCartService.updateUserCart(newUser.id, []);
+        await SupabaseCartService.updateUserWishlist(newUser.id, []);
+      } catch (cartError) {
+        console.warn('Cart initialization failed, but registration continues:', cartError);
+      }
       
       dispatch(showAlert({ type: AlertType.Success, message: 'Регистрация прошла успешно' }));
       
@@ -106,7 +108,7 @@ export const register = createAsyncThunk<User, RegisterCredentials, { state: Roo
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Ошибка регистрации';
       dispatch(showAlert({ type: AlertType.Error, message: errorMessage }));
-      return rejectWithValue(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );

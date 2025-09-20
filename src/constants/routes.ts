@@ -4,6 +4,7 @@ export const PATHS = {
   admin: '/admin/',
   settings: 'settings',
   orders: 'orders',
+  users: 'users',
   wishlist: '/wishlist',
   cart: '/cart',
   success: 'success',

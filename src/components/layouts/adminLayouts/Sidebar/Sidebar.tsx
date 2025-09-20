@@ -1,32 +1,32 @@
-import classes from './Sidebar.module.css';
-import SideBarItem from './SidebarItem/SidebarItem';
-import { useState } from 'react';
-import MenuIcon from '../../../UI/icons/MenuIcon/MenuIcon';
-import ArrowLeftIcon from '../../../UI/icons/ArrowLeftIcon/ArrowLeftIcon';
-// import OrderIcon from '../../UI/icons/OrderIcon/OrderIcon';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import styles from './Sidebar.module.css';
+import SidebarItem from './SidebarItem/SidebarItem';
 import ProductIcon from '../../../UI/icons/ProductIcon/ProductIcon';
-import CategoryIcon from '../../../UI/icons/CategoryIcon/CategoryIcon';
-import { PATHS } from '../../../../constants/routes';
-import OrderIcon from '../../../UI/icons/OrderIcon/OrderIcon';
+import SettingsIcon from '../../../UI/icons/SettingsIcon/SettingsIcon';
 
 const Sidebar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const sidebarHandler = () => {
-    setIsOpen((prevState) => !prevState);
-  };
+  const location = useLocation();
 
   return (
-    <div className={`${classes.sidebar} ${isOpen && classes.open}`}>
-      <button className={`${classes['toggle-btn']} ${isOpen && classes.opened}`} onClick={sidebarHandler}>
-        {isOpen ? <ArrowLeftIcon /> : <MenuIcon />}
-      </button>
-
-      <nav className={classes.navigation}>
-        <ul className={`${isOpen && classes['list-opened']} ${classes.list}`}>
-          <SideBarItem isOpen={isOpen} title={'Заказы'} icon={<OrderIcon />} link={PATHS.orders} />
-          <SideBarItem isOpen={isOpen} title={'Товары'} icon={<ProductIcon />} link={PATHS.products} />
-          <SideBarItem isOpen={isOpen} title={'Настройки'} icon={<CategoryIcon />} link={PATHS.settings} />
+    <div className={styles.sidebar}>
+      <div className={styles.logo}>
+        <h2>Admin Panel</h2>
+      </div>
+      <nav className={styles.nav}>
+        <ul>
+          <SidebarItem 
+            isOpen={true}
+            title="Товары"
+            link="/admin/products"
+            icon={<ProductIcon />}
+          />
+          <SidebarItem 
+            isOpen={true}
+            title="Настройки"
+            link="/admin/settings"
+            icon={<SettingsIcon />}
+          />
         </ul>
       </nav>
     </div>
