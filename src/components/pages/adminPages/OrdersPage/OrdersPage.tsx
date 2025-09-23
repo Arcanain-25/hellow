@@ -10,10 +10,11 @@ import { NO_ORDERS } from '../../../../constants/messages';
 
 const OrdersPage: React.FC = () => {
   const { orders, isLoading } = useSelector((state: RootState) => state.common);
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
   return (
     <>
-      <Actions title={'Заказы'} />
+      <Actions title={`Заказы • Доход: ${totalRevenue} ₽`} />
 
       <Content>
         <>
